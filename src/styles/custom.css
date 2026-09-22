@@ -1,0 +1,94 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+:root {
+  --volcan-brand: #22a3af;
+  --volcan-brand-dark: #167a84;
+  --volcan-brand-light: #e6f7f9;
+  --volcan-heading: #0f172a;
+  --volcan-accent: #f97316;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #334155;
+  background-color: #f8fafc;
+  overflow-x: hidden;
+}
+
+/* Custom Volcan brand utilities */
+.bg-volcan-brand {
+  background-color: var(--volcan-brand) !important;
+}
+
+.text-volcan-brand {
+  color: var(--volcan-brand) !important;
+}
+
+.btn-volcan {
+  background-color: var(--volcan-brand);
+  border-color: var(--volcan-brand);
+  color: #ffffff;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-volcan:hover,
+.btn-volcan:focus {
+  background-color: var(--volcan-brand-dark);
+  border-color: var(--volcan-brand-dark);
+  color: #ffffff;
+}
+
+.btn-volcan-outline {
+  background-color: transparent;
+  border: 2px solid var(--volcan-brand);
+  color: var(--volcan-brand);
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-volcan-outline:hover {
+  background-color: var(--volcan-brand);
+  color: #ffffff;
+}
+
+.card-product {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.card-product:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.1);
+}
+
+.product-img-container {
+  height: 200px;
+  background-color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  position: relative;
+}
+
+.product-img-container img {
+  max-height: 170px;
+  max-width: 100%;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.card-product:hover .product-img-container img {
+  transform: scale(1.05);
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 380px;
+  border-radius: 12px;
+  z-index: 10;
+}

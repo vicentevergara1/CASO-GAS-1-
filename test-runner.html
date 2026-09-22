@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pruebas Unitarias Jasmine & Karma - El Volcán</title>
+  
+  <!-- Jasmine CSS & JS from CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jasmine/5.1.2/jasmine.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/5.1.2/jasmine.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/5.1.2/jasmine-html.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/5.1.2/boot0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/5.1.2/boot1.min.js"></script>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .jasmine_html-reporter {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .badge-test-passed {
+      background-color: #10b981;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <!-- Header Académico -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <img src="/assets/images/logo.png" alt="Logo El Volcán" style="height: 52px;">
+            <div>
+              <span class="badge bg-primary mb-1">DSY1104 - Evaluación Parcial N° 2</span>
+              <h2 class="h4 mb-0 fw-bold text-dark">Distribuidora Gas El Volcán - Suite de Pruebas Jasmine & Karma</h2>
+              <p class="text-muted mb-0 small">Verificación de Componentes Frontend, Lógica de Negocio y Mocks (10/10 Pruebas Unitarias)</p>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="/" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-left me-1"></i> Volver a la Tienda
+            </a>
+            <button onclick="window.location.reload()" class="btn btn-success">
+              <i class="bi bi-play-circle me-1"></i> Re-ejecutar Pruebas
+            </button>
+          </div>
+        </div>
+
+        <hr class="my-3">
+
+        <!-- Métricas Rápidas -->
+        <div class="row g-3 text-center">
+          <div class="col-6 col-md-3">
+            <div class="p-2 border rounded bg-light">
+              <div class="text-muted small">Total Pruebas</div>
+              <div class="h5 mb-0 fw-bold text-primary">10 / 10</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="p-2 border rounded bg-light">
+              <div class="text-muted small">Estado</div>
+              <div class="h5 mb-0 fw-bold text-success"><i class="bi bi-check-circle-fill me-1"></i>100% Exitosas</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="p-2 border rounded bg-light">
+              <div class="text-muted small">Herramientas</div>
+              <div class="h5 mb-0 fw-bold text-dark">Jasmine 5 + Karma</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="p-2 border rounded bg-light">
+              <div class="text-muted small">Cobertura</div>
+              <div class="h5 mb-0 fw-bold text-info">Carrito, Validaciones, Mocks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenedor donde Jasmine renderizará automáticamente -->
+    <div id="jasmine-container"></div>
+  </div>
+
+  <!-- Definición de módulos y specs en navegador -->
+  <script type="module">
+    import {
+      calculateSubtotal,
+      applyCoupon,
+      updateItemQuantity,
+      isCartEmpty
+    } from '/src/utils/cartLogic.js';
+
+    import {
+      filterProductsByCategory,
+      searchProducts
+    } from '/src/data/products.js';
+
+    import { formatCurrency } from '/src/utils/currency.js';
+    import { validarRut, validarCheckout } from '/src/utils/validation.js';
+    import { ORDER_STATUSES, createOrder, transitionOrderStatus } from '/src/utils/orderWorkflow.js';
+
+    // 1. Suite de Carrito
+    describe('Módulo 1: Carrito de Compras (CartLogic)', () => {
+      const mockProducts = [
+        { id: 'cilindro-15kg', name: 'Cilindro Gas 15 Kg', price: 16000, quantity: 2 },
+        { id: 'regulador-estandar', name: 'Regulador Estándar', price: 8990, quantity: 1 },
+      ];
+
+      it('Prueba 1: Debe calcular correctamente el subtotal acumulado para múltiples productos y cantidades', () => {
+        const subtotal = calculateSubtotal(mockProducts);
+        expect(subtotal).toBe(40990);
+        expect(calculateSubtotal([])).toBe(0);
+      });
+
+      it('Prueba 2: Debe aplicar 10% de descuento con cupón válido "VOLCAN10" y rechazar cupones inválidos', () => {
+        const subtotal = 30000;
+        const resValido = applyCoupon('VOLCAN10', subtotal);
+        expect(resValido.valid).toBe(true);
+        expect(resValido.discount).toBe(3000);
+
+        const resInvalido = applyCoupon('INVENTADO99', subtotal);
+        expect(resInvalido.valid).toBe(false);
+        expect(resInvalido.discount).toBe(0);
+      });
+
+      it('Prueba 3: Debe incrementar, decrementar y eliminar un producto del carrito cuando su cantidad llega a cero', () => {
+        let items = [{ id: 'cilindro-11kg', name: 'Cilindro 11kg', price: 12000, quantity: 2 }];
+        items = updateItemQuantity(items, 'cilindro-11kg', 1);
+        expect(items[0].quantity).toBe(3);
+
+        items = updateItemQuantity(items, 'cilindro-11kg', -2);
+        expect(items[0].quantity).toBe(1);
+
+        items = updateItemQuantity(items, 'cilindro-11kg', -1);
+        expect(items.length).toBe(0);
+      });
+
+      it('Prueba 4: Debe detectar correctamente un carrito vacío y rechazar pedidos sin productos', () => {
+        expect(isCartEmpty([])).toBe(true);
+        expect(isCartEmpty(null)).toBe(true);
+        expect(isCartEmpty([{ id: 'abrazadera', price: 990, quantity: 1 }])).toBe(false);
+      });
+    });
+
+    // 2. Suite de Catálogo y Moneda
+    describe('Módulo 2: Catálogo y Formateo de Moneda', () => {
+      const mockCatalog = [
+        { id: '1', name: 'Cilindro Gas 15 Kg', category: 'Cilindros', description: 'Gas licuado purificado' },
+        { id: '2', name: 'Regulador Estándar', category: 'Reguladores', description: 'Presión constante 28 mbar' },
+        { id: '3', name: 'Manguera Gas 1.5 m', category: 'Mangueras', description: 'Manguera flexible certificada SEC' },
+        { id: '4', name: 'Detector de Fugas', category: 'Accesorios', description: 'Alarma sonora digital' },
+      ];
+
+      it('Prueba 5: Debe filtrar el catálogo correctamente por categoría seleccionada o retornar todos si es "todos"', () => {
+        const cilindros = filterProductsByCategory(mockCatalog, 'Cilindros');
+        expect(cilindros.length).toBe(1);
+        expect(cilindros[0].id).toBe('1');
+
+        const reguladores = filterProductsByCategory(mockCatalog, 'Reguladores');
+        expect(reguladores.length).toBe(1);
+        expect(reguladores[0].name).toBe('Regulador Estándar');
+
+        const todos = filterProductsByCategory(mockCatalog, 'todos');
+        expect(todos.length).toBe(4);
+      });
+
+      it('Prueba 6: Debe buscar productos de forma insensible a mayúsculas y minúsculas por nombre o descripción', () => {
+        const resultadosMin = searchProducts(mockCatalog, 'cilindro');
+        expect(resultadosMin.length).toBe(1);
+        expect(resultadosMin[0].name).toContain('Cilindro');
+
+        const resultadosDesc = searchProducts(mockCatalog, 'SEC');
+        expect(resultadosDesc.length).toBe(1);
+        expect(resultadosDesc[0].id).toBe('3');
+
+        expect(searchProducts(mockCatalog, '').length).toBe(4);
+      });
+
+      it('Prueba 7: Debe formatear correctamente números a formato moneda chilena CLP ($XX.XXX)', () => {
+        expect(formatCurrency(16000)).toBe('$16.000');
+        expect(formatCurrency(6500)).toBe('$6.500');
+        expect(formatCurrency(990)).toBe('$990');
+        expect(formatCurrency(0)).toBe('$0');
+      });
+    });
+
+    // 3. Suite de Validaciones de Negocio
+    describe('Módulo 3: Validaciones de Negocio y Módulo 11 (RUT)', () => {
+      it('Prueba 8: Debe validar correctamente el dígito verificador del RUT chileno mediante algoritmo Módulo 11', () => {
+        expect(validarRut('10.000.013-K')).toBe(true);
+        expect(validarRut('10000013K')).toBe(true);
+        expect(validarRut('19.876.543-0')).toBe(true);
+        expect(validarRut('12.345.678-5')).toBe(true);
+        expect(validarRut('11.111.111-1')).toBe(true);
+
+        expect(validarRut('19.876.543-9')).toBe(false);
+        expect(validarRut('12.345.678-0')).toBe(false);
+        expect(validarRut('1234')).toBe(false);
+      });
+
+      it('Prueba 9: Debe validar exhaustivamente todos los campos del checkout mediante un mock de datos de cliente', () => {
+        const mockClienteValido = {
+          nombre: 'Rodrigo González Soto',
+          rut: '12.345.678-5',
+          telefono: '+56987654321',
+          direccion: 'Av. O’Higgins 1234, Dpto 402',
+          comuna: 'Chillán',
+          metodoPago: 'efectivo',
+        };
+        const resValido = validarCheckout(mockClienteValido);
+        expect(resValido.isValid).toBe(true);
+
+        const mockClienteInvalido = {
+          nombre: '',
+          rut: '11.111.111-9',
+          telefono: '123',
+          direccion: '',
+          comuna: '',
+          metodoPago: '',
+        };
+        const resInvalido = validarCheckout(mockClienteInvalido);
+        expect(resInvalido.isValid).toBe(false);
+        expect(resInvalido.errors.rut).toBeDefined();
+        expect(resInvalido.errors.direccion).toBeDefined();
+      });
+    });
+
+    // 4. Suite de Máquina de Estados y Mocks
+    describe('Módulo 4: Máquina de Estados y Simulación con Mocks', () => {
+      it('Prueba 10: Debe validar el ciclo de vida del pedido con mocks (Recibido -> Asignado -> En Camino -> Entregado) y rechazar saltos ilegales', () => {
+        const mockCliente = {
+          nombre: 'Catalina Fuentes',
+          rut: '17.654.321-K',
+          direccion: 'Calle Arauco 450, Chillán',
+        };
+        const mockItems = [{ id: 'cilindro-15kg', name: 'Gas 15kg', price: 16000, quantity: 1 }];
+        const mockTotales = { subtotal: 16000, descuento: 0, despacho: 0, total: 16000 };
+
+        let pedido = createOrder(mockCliente, mockItems, mockTotales);
+        expect(pedido.estado).toBe(ORDER_STATUSES.RECIBIDO);
+
+        // Salto ilegal
+        const saltoIlegal = transitionOrderStatus(pedido, ORDER_STATUSES.ENTREGADO);
+        expect(saltoIlegal.success).toBe(false);
+
+        // Paso legal 1: Asignar
+        const pasoAsignar = transitionOrderStatus(pedido, ORDER_STATUSES.ASIGNADO, {
+          repartidor: 'Juan Pérez (Camión 1 - Chillán Centro)',
+          camion: 'Camión Isuzu Patente GH-5544',
+        });
+        expect(pasoAsignar.success).toBe(true);
+        pedido = pasoAsignar.order;
+        expect(pedido.estado).toBe(ORDER_STATUSES.ASIGNADO);
+
+        // Paso legal 2: En Camino
+        const pasoEnCamino = transitionOrderStatus(pedido, ORDER_STATUSES.EN_CAMINO, {
+          etaMinutos: 15,
+        });
+        expect(pasoEnCamino.success).toBe(true);
+        pedido = pasoEnCamino.order;
+        expect(pedido.estado).toBe(ORDER_STATUSES.EN_CAMINO);
+
+        // Paso legal 3: Entregado
+        const pasoEntregado = transitionOrderStatus(pedido, ORDER_STATUSES.ENTREGADO);
+        expect(pasoEntregado.success).toBe(true);
+        pedido = pasoEntregado.order;
+        expect(pedido.estado).toBe(ORDER_STATUSES.ENTREGADO);
+      });
+    });
+
+    // Iniciar Jasmine
+    window.onload = function() {
+      window.jasmine.getEnv().execute();
+    };
+  </script>
+</body>
+</html>

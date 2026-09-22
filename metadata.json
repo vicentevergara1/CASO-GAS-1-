@@ -1,0 +1,8 @@
+{
+  "name": "El Volcan",
+  "description": "Distribuidora de gas licuado, cilindros, reguladores y accesorios.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

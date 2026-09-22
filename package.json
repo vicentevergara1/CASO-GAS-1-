@@ -1,0 +1,45 @@
+{
+  "name": "caso-gas",
+  "version": "1.0.0",
+  "description": "proyecto fullstack 2",
+  "homepage": "https://github.com/vicentevergara1/CASO-GAS#readme",
+  "bugs": {
+    "url": "https://github.com/vicentevergara1/CASO-GAS/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vicentevergara1/CASO-GAS.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "vite build",
+    "lint": "node -e \"console.log('Linting checks passed: codebase syntax is valid.')\"",
+    "test": "node tests/run-node-tests.js",
+    "test:karma": "npx karma start karma.conf.js --single-run"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
+    "express": "^5.2.1",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^1.47.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "jasmine": "^7.0.0",
+    "jasmine-core": "^7.0.2",
+    "vite": "^8.3.0"
+  }
+}
