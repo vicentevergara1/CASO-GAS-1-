@@ -305,6 +305,169 @@ export const PRODUCTS = [
   },
 ];
 
+const STORAGE_KEY_PRODUCTS = 'caso_gas_products_v1';
+const STORAGE_KEY_CATEGORIES = 'caso_gas_categories_v1';
+
+/**
+ * Carga productos desde LocalStorage o retorna el catálogo inicial.
+ */
+export function getStoredProducts() {
+  if (typeof window === 'undefined') return [...PRODUCTS];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_PRODUCTS);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.error('Error al leer productos de localStorage', e);
+  }
+  // Si no existe, inicializar con PRODUCTS
+  try {
+    localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(PRODUCTS));
+  } catch (e) {
+    // ignore
+  }
+  return [...PRODUCTS];
+}
+
+/**
+ * Guarda los productos en LocalStorage
+ */
+export function saveStoredProducts(products) {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
+  } catch (e) {
+    console.error('Error al guardar productos en localStorage', e);
+  }
+}
+
+/**
+ * Operación CRUD - CREATE: Crea un nuevo producto
+ */
+export function createProduct(productData) {
+  const products = getStoredProducts();
+  const newProduct = {
+    id: productData.id || `prod-${Date.now()}`,
+    name: productData.name || 'Nuevo Producto',
+    category: productData.category || 'Accesorios',
+    price: Number(productData.price) || 0,
+    originalPrice: productData.originalPrice ? Number(productData.originalPrice) : null,
+    isOffer: Boolean(productData.isOffer),
+    image: productData.image || '/assets/images/cilindro.png',
+    description: productData.description || 'Descripción del producto.',
+    specs: productData.specs || { material: 'Certificado SEC', uso: 'Doméstico' },
+    stock: Number(productData.stock) || 0,
+    featured: Boolean(productData.featured),
+    badge: productData.badge || '',
+  };
+  const updated = [newProduct, ...products];
+  saveStoredProducts(updated);
+  return newProduct;
+}
+
+/**
+ * Operación CRUD - READ: Obtiene un producto por su ID
+ */
+export function getProductById(id) {
+  const products = getStoredProducts();
+  return products.find((p) => p.id === id) || null;
+}
+
+/**
+ * Operación CRUD - UPDATE: Actualiza un producto existente
+ */
+export function updateProduct(id, updatedFields) {
+  const products = getStoredProducts();
+  let updatedProduct = null;
+  const updatedList = products.map((p) => {
+    if (p.id === id) {
+      updatedProduct = { ...p, ...updatedFields };
+      return updatedProduct;
+    }
+    return p;
+  });
+  if (updatedProduct) {
+    saveStoredProducts(updatedList);
+  }
+  return updatedProduct;
+}
+
+/**
+ * Operación CRUD - DELETE: Elimina un producto por su ID
+ */
+export function deleteProduct(id) {
+  const products = getStoredProducts();
+  const exists = products.some((p) => p.id === id);
+  if (!exists) return false;
+  const filtered = products.filter((p) => p.id !== id);
+  saveStoredProducts(filtered);
+  return true;
+}
+
+/**
+ * Listado de productos con stock crítico (Requerimiento Figura 10 del flujo Admin)
+ */
+export function getCriticalStockProducts(productsList = null, threshold = 20) {
+  const products = productsList || getStoredProducts();
+  return products.filter((p) => typeof p.stock === 'number' && p.stock <= threshold);
+}
+
+/**
+ * Listado de productos en oferta (Requerimiento Figura 3 y 8: Vista Ofertas)
+ */
+export function getOfferProducts(productsList = null) {
+  const products = productsList || getStoredProducts();
+  return products.filter((p) => p.isOffer || (p.originalPrice && p.originalPrice > p.price));
+}
+
+/**
+ * Restablece los productos al catálogo de fábrica inicial
+ */
+export function resetProductsToDefault() {
+  saveStoredProducts(PRODUCTS);
+  return [...PRODUCTS];
+}
+
+/**
+ * CRUD Categorías con LocalStorage
+ */
+export function getStoredCategories() {
+  if (typeof window === 'undefined') return [...CATEGORIES];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_CATEGORIES);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    // ignore
+  }
+  try {
+    localStorage.setItem(STORAGE_KEY_CATEGORIES, JSON.stringify(CATEGORIES));
+  } catch (e) {
+    // ignore
+  }
+  return [...CATEGORIES];
+}
+
+export function createCategory(catData) {
+  const cats = getStoredCategories();
+  const newCat = {
+    id: catData.id || catData.label.toLowerCase().replace(/\s+/g, '-'),
+    label: catData.label,
+    icon: catData.icon || 'bi-tag',
+  };
+  const updated = [...cats, newCat];
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY_CATEGORIES, JSON.stringify(updated));
+  }
+  return newCat;
+}
+
 /**
  * Filtra productos por categoría
  */
@@ -330,3 +493,4 @@ export function searchProducts(products = [], query = '') {
     return inName || inDesc || inCategory;
   });
 }
+

@@ -7,24 +7,24 @@ export default function AboutSection() {
         <div className="row align-items-center g-5">
           {/* Columna Imagen / Sede Chillán */}
           <div className="col-12 col-lg-5">
-            <div className="position-relative">
+            <div className="card border-0 shadow-sm rounded-4 overflow-hidden bg-white p-2">
               <img
                 src="/assets/images/chillan.jpg"
                 alt="Planta El Volcán en Chillán"
-                className="img-fluid rounded-4 shadow"
-                style={{ objectFit: 'cover', minHeight: '320px', width: '100%' }}
+                className="img-fluid rounded-3"
+                style={{ objectFit: 'cover', height: '260px', width: '100%' }}
                 onError={(e) => {
-                  e.target.src = '/assets/images/volcan.png';
+                  e.target.src = '/assets/images/cilindro.png';
                 }}
               />
-              <div className="card position-absolute bottom-0 end-0 m-3 p-3 bg-white border-0 shadow-lg rounded-3 text-start">
-                <div className="d-flex align-items-center gap-2">
+              <div className="p-3 bg-light rounded-3 mt-2 text-start border">
+                <div className="d-flex align-items-center gap-3">
                   <div className="bg-primary-subtle text-primary p-2 rounded-circle">
                     <i className="bi bi-award fs-4"></i>
                   </div>
                   <div>
-                    <h6 className="mb-0 fw-bold text-dark">Fundada en 1998</h6>
-                    <span className="small text-muted">26 años en Chillán y Ñuble</span>
+                    <h6 className="mb-0 fw-bold text-dark">Distribuidora Fundada en 1998</h6>
+                    <span className="small text-secondary">Más de 26 años al servicio de Chillán y la Región de Ñuble</span>
                   </div>
                 </div>
               </div>

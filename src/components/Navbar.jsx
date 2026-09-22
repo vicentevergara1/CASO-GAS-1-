@@ -29,12 +29,15 @@ export default function Navbar({
           }}
         >
           <img
-            src="/assets/images/logo.png"
+            src="/assets/images/logo.svg"
             alt="Logo El Volcán"
-            style={{ height: '42px', width: 'auto' }}
+            style={{ height: '40px', width: '40px' }}
+            onError={(e) => {
+              e.target.src = '/assets/images/logo.png';
+            }}
           />
           <div className="d-flex flex-column">
-            <span className="fw-bold text-dark fs-5 lh-1">El Volcán</span>
+            <span className="fw-bold text-dark fs-5 lh-1">Gas El Volcán</span>
             <span className="text-muted small lh-1" style={{ fontSize: '0.72rem' }}>
               Chillán &bull; Desde 1998
             </span>
@@ -69,7 +72,7 @@ export default function Navbar({
 
         {/* 3. Menú colapsable */}
         <div className={`collapse navbar-collapse ${navExpanded ? 'show' : ''}`} id="navbarMain">
-          {/* Enlaces de navegación principales */}
+          {/* Enlaces de navegación principales según diagrama Figura 3 y 4 */}
           <ul className="navbar-nav me-auto mb-2 mb-xl-0 fw-medium">
             <li className="nav-item">
               <button
@@ -81,7 +84,46 @@ export default function Navbar({
                   setNavExpanded(false);
                 }}
               >
-                <i className="bi bi-fire me-1 text-danger"></i> Catálogo
+                <i className="bi bi-house-door me-1"></i> Catálogo
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                className={`nav-link btn btn-link text-decoration-none ${
+                  activeView === 'categorias' ? 'active fw-bold text-primary' : 'text-dark'
+                }`}
+                onClick={() => {
+                  onNavigate('categorias');
+                  setNavExpanded(false);
+                }}
+              >
+                <i className="bi bi-grid me-1"></i> Categorías
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                className={`nav-link btn btn-link text-decoration-none ${
+                  activeView === 'ofertas' ? 'active fw-bold text-danger' : 'text-dark'
+                }`}
+                onClick={() => {
+                  onNavigate('ofertas');
+                  setNavExpanded(false);
+                }}
+              >
+                <i className="bi bi-fire me-1 text-danger"></i> Ofertas
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                className={`nav-link btn btn-link text-decoration-none ${
+                  activeView === 'blogs' ? 'active fw-bold text-primary' : 'text-dark'
+                }`}
+                onClick={() => {
+                  onNavigate('blogs');
+                  setNavExpanded(false);
+                }}
+              >
+                <i className="bi bi-newspaper me-1"></i> Blogs
               </button>
             </li>
             <li className="nav-item">
@@ -126,19 +168,6 @@ export default function Navbar({
             <li className="nav-item">
               <button
                 className={`nav-link btn btn-link text-decoration-none ${
-                  activeView === 'faq' ? 'active fw-bold text-primary' : 'text-dark'
-                }`}
-                onClick={() => {
-                  onNavigate('faq');
-                  setNavExpanded(false);
-                }}
-              >
-                <i className="bi bi-question-circle me-1"></i> Preguntas
-              </button>
-            </li>
-            <li className="nav-item">
-              <button
-                className={`nav-link btn btn-link text-decoration-none ${
                   activeView === 'contacto' ? 'active fw-bold text-primary' : 'text-dark'
                 }`}
                 onClick={() => {
@@ -162,7 +191,7 @@ export default function Navbar({
                     setNavExpanded(false);
                   }}
                 >
-                  <i className="bi bi-speedometer2 me-1 text-warning"></i> Panel {currentUser.role}
+                  <i className="bi bi-speedometer2 me-1 text-warning"></i> Panel Admin
                 </button>
               </li>
             )}
@@ -193,71 +222,8 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* Acciones Rápidas: Suite Jasmine, Selector de Rol, Perfil y Carrito */}
+          {/* Acciones Rápidas: Perfil y Carrito */}
           <div className="d-flex flex-wrap align-items-center gap-2">
-            {/* Botón Jasmine Unit Tests */}
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-success d-flex align-items-center gap-1 shadow-sm"
-              onClick={onOpenJasmineTests}
-              title="Ver las 10 pruebas unitarias con Jasmine & Karma"
-            >
-              <i className="bi bi-patch-check-fill text-success"></i>
-              <span className="fw-semibold">Pruebas Jasmine</span>
-              <span className="badge bg-success ms-1">10/10</span>
-            </button>
-
-            {/* Selector de Rol (Para facilitar la demostración de la evaluación) */}
-            <div className="dropdown">
-              <button
-                className="btn btn-sm btn-light border dropdown-toggle d-flex align-items-center gap-1"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i className="bi bi-person-badge text-secondary"></i>
-                <span className="small text-muted">Rol:</span>
-                <span className="fw-bold small">{currentUser.role}</span>
-              </button>
-              <ul className="dropdown-menu dropdown-menu-end shadow-sm small">
-                <li>
-                  <h6 className="dropdown-header">Cambiar Rol (Demostración)</h6>
-                </li>
-                <li>
-                  <button
-                    className={`dropdown-item ${currentUser.role === 'Cliente' ? 'active' : ''}`}
-                    onClick={() => onRoleChange('Cliente')}
-                  >
-                    <i className="bi bi-person me-2"></i> Cliente Residencial
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={`dropdown-item ${currentUser.role === 'Operadora' ? 'active' : ''}`}
-                    onClick={() => onRoleChange('Operadora')}
-                  >
-                    <i className="bi bi-headset me-2"></i> Operadora de Pedidos
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={`dropdown-item ${currentUser.role === 'Repartidor' ? 'active' : ''}`}
-                    onClick={() => onRoleChange('Repartidor')}
-                  >
-                    <i className="bi bi-truck me-2"></i> Repartidor (Camión)
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={`dropdown-item ${currentUser.role === 'Administrador' ? 'active' : ''}`}
-                    onClick={() => onRoleChange('Administrador')}
-                  >
-                    <i className="bi bi-shield-lock me-2"></i> Administrador General
-                  </button>
-                </li>
-              </ul>
-            </div>
-
             {/* Usuario / Login */}
             <button
               type="button"

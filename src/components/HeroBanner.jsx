@@ -96,29 +96,49 @@ export default function HeroBanner({ onSelectCategory, onQuickAddCylinder }) {
             </div>
           </div>
 
-          {/* Columna Imagen / Sello */}
-          <div className="col-12 col-lg-5 text-center">
-            <div className="position-relative d-inline-block">
-              <img
-                src="/assets/images/15kg.png"
-                alt="Cilindro Gas El Volcán 15kg"
-                className="img-fluid"
-                style={{ maxHeight: '340px', filter: 'drop-shadow(0 10px 15px rgba(0,0,0,0.15))' }}
-              />
-              <div
-                className="position-absolute bottom-0 start-0 bg-white p-3 rounded-3 shadow border text-start"
-                style={{ maxWidth: '240px' }}
-              >
-                <div className="d-flex align-items-center gap-2 mb-1">
-                  <i className="bi bi-shield-fill-check text-success fs-4"></i>
-                  <div>
-                    <h6 className="mb-0 fw-bold small text-dark">Certificación SEC</h6>
-                    <span className="text-muted small" style={{ fontSize: '0.75rem' }}>Norma NCh 1079</span>
+          {/* Columna Imagen / Showcase de Producto */}
+          <div className="col-12 col-lg-5">
+            <div className="card border-0 shadow-sm rounded-4 bg-light p-4 text-center">
+              <div className="d-flex justify-content-center align-items-center py-2" style={{ minHeight: '280px' }}>
+                <img
+                  src="/assets/images/15kg.png"
+                  alt="Cilindro Gas El Volcán 15kg"
+                  className="img-fluid"
+                  style={{
+                    maxHeight: '270px',
+                    objectFit: 'contain',
+                    filter: 'drop-shadow(0 14px 20px rgba(0, 0, 0, 0.14))',
+                  }}
+                  onError={(e) => {
+                    e.target.src = '/assets/images/cilindro.png';
+                  }}
+                />
+              </div>
+
+              {/* Badges de Confianza y Certificación SEC (Debajo de la foto, sin tapar la imagen) */}
+              <div className="row g-2 mt-3 pt-3 border-top text-start">
+                <div className="col-6">
+                  <div className="p-2 bg-white rounded-3 border h-100">
+                    <div className="d-flex align-items-center gap-2 mb-1">
+                      <i className="bi bi-shield-fill-check text-success fs-5"></i>
+                      <strong className="small text-dark" style={{ fontSize: '0.8rem' }}>Sello SEC</strong>
+                    </div>
+                    <p className="text-secondary mb-0" style={{ fontSize: '0.72rem' }}>
+                      Norma NCh 1079 oficial
+                    </p>
                   </div>
                 </div>
-                <p className="small text-secondary mb-0" style={{ fontSize: '0.75rem' }}>
-                  Prueba de estanqueidad incluida en cada recambio domiciliario.
-                </p>
+                <div className="col-6">
+                  <div className="p-2 bg-white rounded-3 border h-100">
+                    <div className="d-flex align-items-center gap-2 mb-1">
+                      <i className="bi bi-truck text-primary fs-5"></i>
+                      <strong className="small text-dark" style={{ fontSize: '0.8rem' }}>&lt; 30 Minutos</strong>
+                    </div>
+                    <p className="text-secondary mb-0" style={{ fontSize: '0.72rem' }}>
+                      Chillán y Chillán Viejo
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -11,6 +11,7 @@ export default function CheckoutModal({
   shipping,
   total,
   onOrderSuccess,
+  onOrderError,
 }) {
   const [formData, setFormData] = useState({
     nombre: '',
@@ -319,7 +320,7 @@ export default function CheckoutModal({
             </div>
 
             {/* Footer */}
-            <div className="modal-footer bg-light border-top p-3 d-flex justify-content-between">
+            <div className="modal-footer bg-light border-top p-3 d-flex flex-wrap justify-content-between gap-2">
               <button
                 type="button"
                 className="btn btn-sm btn-outline-secondary"
@@ -329,22 +330,47 @@ export default function CheckoutModal({
                 Volver al Carrito
               </button>
 
-              <button
-                type="submit"
-                className="btn btn-primary fw-bold px-4 shadow-sm"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2"></span>
-                    Confirmando pedido...
-                  </>
-                ) : (
-                  <>
-                    <i className="bi bi-check2-circle me-1"></i> Confirmar y Despachar Pedido
-                  </>
+              <div className="d-flex align-items-center gap-2">
+                {onOrderError && (
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-danger"
+                    title="Simular fallo en pasarela de pago para revisar la vista de error (Figura 8)"
+                    onClick={() => {
+                      const validation = validarCheckout(formData);
+                      if (!validation.isValid) {
+                        setErrors(validation.errors);
+                        return;
+                      }
+                      setIsSubmitting(true);
+                      setTimeout(() => {
+                        setIsSubmitting(false);
+                        onOrderError(formData);
+                      }, 600);
+                    }}
+                    disabled={isSubmitting}
+                  >
+                    <i className="bi bi-exclamation-triangle me-1"></i> Simular Error de Pago
+                  </button>
                 )}
-              </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-primary fw-bold px-4 shadow-sm"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2"></span>
+                      Confirmando pedido...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-check2-circle me-1"></i> Confirmar y Despachar Pedido
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </form>
         </div>

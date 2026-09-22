@@ -19,10 +19,10 @@ export default function JasmineRunnerModal({ isOpen, onClose }) {
               </span>
               <div>
                 <h5 className="modal-title fw-bold text-dark fs-5 mb-0">
-                  Suite de Pruebas Unitarias Jasmine & Karma (10/10 Pruebas)
+                  Control de Calidad &bull; Suite de Pruebas Automatizadas
                 </h5>
                 <span className="text-muted small">
-                  Evaluación Parcial N° 2 &bull; Indicadores IE2.2.1, IE2.3.1, IE2.2.2, IE2.3.2
+                  Verificación de Integridad de Carrito, Catálogo, Despacho y Componentes React (Jasmine 5 + Karma)
                 </span>
               </div>
             </div>

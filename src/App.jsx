@@ -15,7 +15,19 @@ import AuthModal from './components/AuthModal';
 import JasmineRunnerModal from './components/JasmineRunnerModal';
 import Footer from './components/Footer';
 
-import { PRODUCTS, filterProductsByCategory, searchProducts } from './data/products';
+// Nuevos componentes según flujo de evaluación Duoc UC (Figuras 3, 4, 7, 8, 9, 10)
+import CategoriesView from './components/CategoriesView';
+import OffersView from './components/OffersView';
+import BlogsView from './components/BlogsView';
+import OrderSuccessView from './components/OrderSuccessView';
+import OrderErrorView from './components/OrderErrorView';
+
+import {
+  getStoredProducts,
+  getStoredCategories,
+  filterProductsByCategory,
+  searchProducts
+} from './data/products';
 import {
   calculateSubtotal,
   calculateTotal,
@@ -27,13 +39,22 @@ import {
 import { createOrder, ORDER_STATUSES } from './utils/orderWorkflow';
 
 export default function App() {
-  // 1. Estado de Navegación y Vistas
-  const [activeView, setActiveView] = useState('catalogo'); // 'catalogo' | 'servicios' | 'seguimiento' | 'admin' | 'nosotros' | 'faq' | 'contacto'
+  // 1. Estado de Navegación y Vistas según el Diagrama de Flujo de la Evaluación
+  // 'catalogo' | 'categorias' | 'ofertas' | 'blogs' | 'servicios' | 'seguimiento' | 'admin' | 'nosotros' | 'contacto' | 'compra_exitosa' | 'compra_error'
+  const [activeView, setActiveView] = useState('catalogo');
 
-  // 2. Estado de Catálogo y Filtros
+  // 2. Estado de Catálogo reactivo desde almacenamiento local (CRUD)
+  const [allProducts, setAllProducts] = useState(() => getStoredProducts());
+  const [allCategories, setAllCategories] = useState(() => getStoredCategories());
   const [selectedCategory, setSelectedCategory] = useState('todos');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null); // Para modal de detalle
+
+  // Recargar productos cuando se vuelva de admin o cambie el storage
+  const refreshProducts = () => {
+    setAllProducts(getStoredProducts());
+    setAllCategories(getStoredCategories());
+  };
 
   // 3. Estado de Carrito de Compras (con persistencia en localStorage)
   const [cartItems, setCartItems] = useState(() => {
@@ -82,7 +103,7 @@ export default function App() {
     role: 'Cliente', // 'Cliente' | 'Operadora' | 'Repartidor' | 'Administrador'
   });
 
-  // 6. Pedido Activo para Seguimiento en Tiempo Real
+  // 6. Pedido Activo para Seguimiento y Vistas de Compra Exitosa/Error (Figuras 7 y 8)
   const [activeOrder, setActiveOrder] = useState(null);
 
   // 7. Toast de Notificación
@@ -96,7 +117,7 @@ export default function App() {
   };
 
   // Filtrado de productos reactivo
-  let filteredProducts = filterProductsByCategory(PRODUCTS, selectedCategory);
+  let filteredProducts = filterProductsByCategory(allProducts, selectedCategory);
   if (searchQuery.trim()) {
     filteredProducts = searchProducts(filteredProducts, searchQuery);
   }
@@ -133,7 +154,7 @@ export default function App() {
 
   // Acceso rápido a cilindros desde el Hero
   const handleQuickAddCylinder = (cylinderId) => {
-    const prod = PRODUCTS.find((p) => p.id === cylinderId);
+    const prod = allProducts.find((p) => p.id === cylinderId);
     if (prod) {
       handleAddToCart(prod, 1);
       setIsCartOpen(true);
@@ -167,7 +188,7 @@ export default function App() {
     setCouponFeedback({ message: res.message, valid: res.valid });
   };
 
-  // Procesar pedido desde el Checkout
+  // Procesar pedido desde el Checkout (Flujo Figuras 6, 7 y 8)
   const handleOrderSuccess = (customerData) => {
     const newOrder = createOrder(
       customerData,
@@ -178,8 +199,25 @@ export default function App() {
     setActiveOrder(newOrder);
     setIsCheckoutOpen(false);
     handleClearCart();
-    setActiveView('seguimiento');
-    showToast(`🎉 ¡Pedido #${newOrder.id} creado con éxito! Despacho en camino.`);
+
+    // Navegar a la vista de Compra Exitosa (Figura 7)
+    setActiveView('compra_exitosa');
+    showToast(`🎉 ¡Compra exitosa! Boleta #${newOrder.id} generada.`);
+  };
+
+  // Simulación de error en pasarela de pago (Figura 8)
+  const handleOrderError = (customerData) => {
+    const errorOrder = {
+      id: Math.floor(100000 + Math.random() * 900000).toString(),
+      cliente: customerData,
+      totales: { total },
+      codigoError: 'TBK-REJ-992',
+      motivo: 'Transacción rechazada por el banco emisor o fondos insuficientes',
+    };
+    setActiveOrder(errorOrder);
+    setIsCheckoutOpen(false);
+    setActiveView('compra_error');
+    showToast('⚠️ La transacción fue rechazada por la pasarela de pago.');
   };
 
   // Solicitar servicio técnico
@@ -197,7 +235,10 @@ export default function App() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         activeView={activeView}
-        onNavigate={setActiveView}
+        onNavigate={(view) => {
+          refreshProducts();
+          setActiveView(view);
+        }}
         currentUser={currentUser}
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenJasmineTests={() => setIsJasmineModalOpen(true)}
@@ -223,12 +264,16 @@ export default function App() {
         </div>
       )}
 
-      {/* 2. Contenido según la Vista Activa */}
+      {/* 2. Contenido según la Vista Activa (Flujo de Navegación de Evaluación 2) */}
       <main className="flex-grow-1">
+        {/* VISTA 1: Catálogo Principal / Home */}
         {activeView === 'catalogo' && (
           <>
             <HeroBanner
-              onSelectCategory={setSelectedCategory}
+              onSelectCategory={(cat) => {
+                setSelectedCategory(cat);
+                setActiveView('categorias');
+              }}
               onQuickAddCylinder={handleQuickAddCylinder}
             />
             <ProductCatalog
@@ -247,10 +292,39 @@ export default function App() {
           </>
         )}
 
+        {/* VISTA 2: Categorías (Figura 4: Diseño web propuesta vista categorías) */}
+        {activeView === 'categorias' && (
+          <CategoriesView
+            categories={allCategories}
+            products={allProducts}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            onAddToCart={handleAddToCart}
+            onViewProductDetail={(p) => setSelectedProduct(p)}
+          />
+        )}
+
+        {/* VISTA 3: Ofertas (Figura 3 y 8: Vista que muestra todos los productos en ofertas) */}
+        {activeView === 'ofertas' && (
+          <OffersView
+            products={allProducts}
+            onAddToCart={handleAddToCart}
+            onViewProductDetail={(p) => setSelectedProduct(p)}
+            onGoToCatalog={() => setActiveView('catalogo')}
+          />
+        )}
+
+        {/* VISTA 4: Blogs (Figura 3: Blogs -> Detalle Blog #1, Detalle Blog #2) */}
+        {activeView === 'blogs' && (
+          <BlogsView onGoToCatalog={() => setActiveView('catalogo')} />
+        )}
+
+        {/* VISTA 5: Servicios Técnicos */}
         {activeView === 'servicios' && (
           <ServicesSection onOrderService={handleOrderService} />
         )}
 
+        {/* VISTA 6: Seguimiento GPS en Tiempo Real (OpenStreetMap) */}
         {activeView === 'seguimiento' && (
           <OrderTracking
             currentOrder={activeOrder}
@@ -258,14 +332,37 @@ export default function App() {
           />
         )}
 
-        {activeView === 'admin' && (
-          <AdminDashboard currentUser={currentUser} />
+        {/* VISTA 7: Compra Exitosa (Figura 7: Diseño web propuesta vista compra exitosa) */}
+        {activeView === 'compra_exitosa' && (
+          <OrderSuccessView
+            order={activeOrder}
+            onTrackOrder={() => setActiveView('seguimiento')}
+            onGoHome={() => setActiveView('catalogo')}
+          />
         )}
 
+        {/* VISTA 8: Pago con Error (Figura 8: Diseño web propuesta no se pudo realizar el pago) */}
+        {activeView === 'compra_error' && (
+          <OrderErrorView
+            order={activeOrder}
+            onRetryPayment={() => setIsCheckoutOpen(true)}
+            onGoHome={() => setActiveView('catalogo')}
+          />
+        )}
+
+        {/* VISTA 9: Panel de Administración (Figura 9 y 10: Propuesta final sistema administrativo) */}
+        {activeView === 'admin' && (
+          <AdminDashboard
+            currentUser={currentUser}
+            onGoToStore={() => {
+              refreshProducts();
+              setActiveView('catalogo');
+            }}
+          />
+        )}
+
+        {/* VISTAS INSTITUCIONALES */}
         {activeView === 'nosotros' && <AboutSection />}
-
-        {activeView === 'faq' && <FaqSection />}
-
         {activeView === 'contacto' && <ContactSection />}
       </main>
 
@@ -303,6 +400,7 @@ export default function App() {
         shipping={shippingCost}
         total={total}
         onOrderSuccess={handleOrderSuccess}
+        onOrderError={handleOrderError}
       />
 
       <ProductDetailModal

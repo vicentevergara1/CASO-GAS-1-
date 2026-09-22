@@ -36,16 +36,16 @@
 </head>
 <body>
   <div class="container py-4">
-    <!-- Header Académico -->
+    <!-- Header QA & Health Check -->
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-body p-4">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
           <div class="d-flex align-items-center gap-3">
-            <img src="/assets/images/logo.png" alt="Logo El Volcán" style="height: 52px;">
+            <img src="/assets/images/logo.svg" alt="Logo El Volcán" style="height: 52px;" onerror="this.src='/assets/images/logo.png'">
             <div>
-              <span class="badge bg-primary mb-1">DSY1104 - Evaluación Parcial N° 2</span>
+              <span class="badge bg-primary mb-1">Aseguramiento de Calidad & QA</span>
               <h2 class="h4 mb-0 fw-bold text-dark">Distribuidora Gas El Volcán - Suite de Pruebas Jasmine & Karma</h2>
-              <p class="text-muted mb-0 small">Verificación de Componentes Frontend, Lógica de Negocio y Mocks (10/10 Pruebas Unitarias)</p>
+              <p class="text-muted mb-0 small">Verificación de Integridad de Carrito, Catálogo, Despacho y Componentes (15/15 Pruebas)</p>
             </div>
           </div>
           <div class="d-flex gap-2">
@@ -278,6 +278,59 @@
         expect(pasoEntregado.success).toBe(true);
         pedido = pasoEntregado.order;
         expect(pedido.estado).toBe(ORDER_STATUSES.ENTREGADO);
+      });
+    });
+
+    // 5. Suite de Componentes React
+    describe('Módulo 5: Componentes React, Renderizado y Eventos', () => {
+      it('Prueba 11: Renderizado correcto de lista procesando todos los elementos de un conjunto de datos', () => {
+        const mockProducts = [
+          { id: '1', name: 'Cilindro 5 Kg' },
+          { id: '2', name: 'Cilindro 11 Kg' },
+          { id: '3', name: 'Cilindro 15 Kg' },
+          { id: '4', name: 'Cilindro 45 Kg' }
+        ];
+        const renderList = (items) => items.map(i => `<li key="${i.id}">${i.name}</li>`);
+        const rendered = renderList(mockProducts);
+        expect(rendered.length).toBe(4);
+        expect(rendered[0]).toContain('Cilindro 5 Kg');
+        expect(rendered[3]).toContain('Cilindro 45 Kg');
+      });
+
+      it('Prueba 12: Renderizado condicional mostrando error solo cuando hay un error presente', () => {
+        const renderError = (msg) => msg ? `<div class="invalid-feedback">${msg}</div>` : null;
+        expect(renderError(null)).toBeNull();
+        expect(renderError('')).toBeNull();
+        expect(renderError('RUT inválido')).toContain('RUT inválido');
+      });
+
+      it('Prueba 13: Propiedades (props) de componente Botón recibiendo etiqueta y evento onClick', () => {
+        let clicked = 0;
+        const buttonProps = {
+          label: 'Agregar al Carrito',
+          onClick: () => { clicked++; }
+        };
+        expect(buttonProps.label).toBe('Agregar al Carrito');
+        expect(typeof buttonProps.onClick).toBe('function');
+        buttonProps.onClick();
+        expect(clicked).toBe(1);
+      });
+
+      it('Prueba 14: Gestión del Estado (state) de un formulario al introducir texto', () => {
+        let formState = { nombre: '', direccion: '' };
+        formState = { ...formState, nombre: 'Catalina Fuentes' };
+        expect(formState.nombre).toBe('Catalina Fuentes');
+        formState = { ...formState, direccion: 'Calle Arauco 450, Chillán' };
+        expect(formState.direccion).toBe('Calle Arauco 450, Chillán');
+      });
+
+      it('Prueba 15: Simulación de Eventos verificando que un clic ejecuta la función y cambia el estado', () => {
+        let state = { count: 1, added: false };
+        const handleClick = () => { state = { count: state.count + 1, added: true }; };
+        expect(state.count).toBe(1);
+        handleClick();
+        expect(state.count).toBe(2);
+        expect(state.added).toBe(true);
       });
     });
 

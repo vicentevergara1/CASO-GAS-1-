@@ -9,9 +9,12 @@ export default function Footer({ onNavigate, onOpenJasmineTests }) {
           <div className="col-12 col-md-4">
             <div className="d-flex align-items-center gap-2 mb-3">
               <img
-                src="/assets/images/logo.png"
-                alt="Logo El Volcán"
-                style={{ height: '48px', filter: 'brightness(1.2)' }}
+                src="/assets/images/logo.svg"
+                alt="Logo Gas El Volcán"
+                style={{ height: '42px', width: '42px' }}
+                onError={(e) => {
+                  e.target.src = '/assets/images/logo.png';
+                }}
               />
               <div>
                 <h5 className="fw-bold mb-0 text-white">Gas El Volcán</h5>
@@ -84,21 +87,30 @@ export default function Footer({ onNavigate, onOpenJasmineTests }) {
             </ul>
           </div>
 
-          {/* Columna 3: Información Académica / Pruebas */}
+          {/* Columna 3: Medios de Pago & Seguridad */}
           <div className="col-6 col-md-3">
-            <h6 className="fw-bold text-white mb-3">Proyecto Académico</h6>
-            <p className="text-secondary small mb-2" style={{ fontSize: '0.78rem' }}>
-              <strong>DSY1104 - Desarrollo FullStack II</strong><br />
-              Evaluación Parcial N° 2 (Forma C)<br />
-              Frontend React + Jasmine & Karma Mocks
+            <h6 className="fw-bold text-white mb-3">Medios de Pago</h6>
+            <p className="text-secondary small mb-3" style={{ fontSize: '0.82rem' }}>
+              Transacciones seguras y múltiples alternativas de pago para tu comodidad:
             </p>
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-success d-flex align-items-center gap-1 mt-2"
-              onClick={onOpenJasmineTests}
-            >
-              <i className="bi bi-patch-check-fill"></i> Ver 10 Pruebas Unitarias
-            </button>
+            <div className="d-flex flex-column gap-2 small text-secondary">
+              <div className="d-flex align-items-center gap-2">
+                <i className="bi bi-credit-card-2-front-fill text-primary"></i>
+                <span>Webpay Plus & Transbank</span>
+              </div>
+              <div className="d-flex align-items-center gap-2">
+                <i className="bi bi-phone-fill text-info"></i>
+                <span>POS Móvil inalámbrico al repartidor</span>
+              </div>
+              <div className="d-flex align-items-center gap-2">
+                <i className="bi bi-cash-stack text-success"></i>
+                <span>Efectivo contra entrega en tu domicilio</span>
+              </div>
+              <div className="d-flex align-items-center gap-2">
+                <i className="bi bi-shield-check text-warning"></i>
+                <span>Pesaje y prueba de espuma garantizada</span>
+              </div>
+            </div>
           </div>
 
           {/* Columna 4: Contacto Chillán */}
@@ -119,7 +131,7 @@ export default function Footer({ onNavigate, onOpenJasmineTests }) {
               </li>
               <li>
                 <i className="bi bi-clock-fill text-warning me-2"></i>
-                Lun - Sáb: 08:30 - 20:00 hrs
+                Lun - Dom: 08:30 - 21:00 hrs
               </li>
             </ul>
           </div>
@@ -127,12 +139,23 @@ export default function Footer({ onNavigate, onOpenJasmineTests }) {
 
         <hr className="border-secondary my-4" />
 
-        <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 small text-secondary">
+        <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 small text-secondary">
           <div>
-            &copy; {new Date().getFullYear()} Distribuidora de Gas El Volcán &bull; Chillán, Región de Ñuble, Chile. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} Distribuidora de Gas El Volcán SpA &bull; Chillán, Región de Ñuble, Chile. Todos los derechos reservados.
           </div>
-          <div>
-            Medios de pago: Efectivo &bull; Redcompra POS móvil &bull; Transferencia directa
+          <div className="d-flex align-items-center gap-3">
+            <span>Términos y Condiciones</span>
+            <span>&bull;</span>
+            <span>Política de Privacidad</span>
+            <span>&bull;</span>
+            <button
+              type="button"
+              className="btn btn-link text-secondary text-decoration-none p-0 small hover-text-white"
+              onClick={onOpenJasmineTests}
+              title="Aseguramiento de Calidad y Pruebas Automatizadas"
+            >
+              <i className="bi bi-shield-check me-1"></i> Control de Calidad & QA
+            </button>
           </div>
         </div>
       </div>

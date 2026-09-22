@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="volcanGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0891b2" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="flameGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#f97316" />
+      <stop offset="50%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#ef4444" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="36" fill="url(#volcanGrad)" />
+  <!-- Montaña Volcán -->
+  <path d="M35 155 L100 65 L165 155 Z" fill="#0f172a" opacity="0.25" />
+  <path d="M40 155 L100 75 L160 155 Z" fill="#ffffff" opacity="0.95" />
+  <path d="M78 105 L100 75 L122 105 L112 100 L100 110 L88 100 Z" fill="#0284c7" />
+  <!-- Llama de Gas en la cúspide -->
+  <path d="M100 35 C115 55 125 75 115 95 C110 80 98 75 95 65 C92 75 88 85 85 92 C75 75 85 55 100 35 Z" fill="url(#flameGrad)" />
+  <ellipse cx="100" cy="80" rx="6" ry="12" fill="#fef08a" opacity="0.9" />
+</svg>

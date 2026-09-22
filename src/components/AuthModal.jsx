@@ -95,7 +95,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
           {/* Quick Demo Roles Bar */}
           <div className="bg-light p-3 border-bottom">
             <span className="small text-muted fw-bold d-block mb-2">
-              <i className="bi bi-stars text-warning me-1"></i> Acceso Rápido por Rol (Para Evaluación DSY1104):
+              <i className="bi bi-person-badge text-primary me-1"></i> Cuentas de Acceso Rápido (Demostración):
             </span>
             <div className="d-flex flex-wrap gap-2">
               <button

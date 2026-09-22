@@ -4,13 +4,20 @@ import { formatCurrency } from '../utils/currency';
 export default function ProductCard({ product, onAddToCart, onQuickView }) {
   return (
     <div className="card h-100 card-product shadow-sm border">
-      {/* Contenedor de Imagen con Badge */}
-      <div className="product-img-container">
+      {/* Barra superior de categoría y badge (100% despejada, sin tapar la foto) */}
+      <div className="px-3 pt-3 pb-2 d-flex justify-content-between align-items-center bg-white border-bottom border-light">
+        <span className="badge bg-light text-secondary border small">
+          {product.category}
+        </span>
         {product.badge && (
-          <span className="badge bg-primary position-absolute top-0 start-0 m-2 shadow-sm">
+          <span className="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold" style={{ fontSize: '0.72rem' }}>
             {product.badge}
           </span>
         )}
+      </div>
+
+      {/* Contenedor de Imagen Libre de Textos Superpuestos */}
+      <div className="product-img-container">
         <img
           src={product.image}
           alt={product.name}
