@@ -18,7 +18,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev": "node server.js",
+    "dev": "vite",
     "start": "node server.js",
     "build": "vite build",
     "lint": "node -e \"console.log('Linting checks passed: codebase syntax is valid.')\"",
